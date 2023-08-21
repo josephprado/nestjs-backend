@@ -36,7 +36,7 @@ export class AccessTokenGuard implements CanActivate {
         secret: this.CONFIG.get('JWT_ACCESS_SECRET')
       });
       request.user = payload;
-      payload.sub && this.LOGGER.log(`Authorized user with id=${payload.sub}.`);
+      payload.id && this.LOGGER.log(`Authorized user with id=${payload.id}.`);
     } catch {
       this.LOGGER.error('Invalid token.');
       throw new UnauthorizedException();

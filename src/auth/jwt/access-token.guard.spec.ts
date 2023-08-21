@@ -110,7 +110,7 @@ describe('AccessTokenGuard', () => {
         })
       };
       const payload = {
-        sub: randomUUID(),
+        id: randomUUID(),
         username: 'username'
       };
       jest.spyOn(jwtSvc, 'verifyAsync').mockResolvedValue(payload);

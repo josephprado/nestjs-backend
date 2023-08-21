@@ -6,6 +6,7 @@ import { QueryFailedErrorFilter } from './shared/exception-filter/query-failed-e
 import { EntityNotFoundErrorFilter } from './shared/exception-filter/entity-not-found-error.filter';
 import { EntityPropertyNotFoundErrorFilter } from './shared/exception-filter/entity-property-not-found-error.filter';
 import { ConfigService } from '@nestjs/config';
+import cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -19,8 +20,9 @@ async function bootstrap() {
     new EntityNotFoundErrorFilter(),
     new EntityPropertyNotFoundErrorFilter()
   );
+  app.use(cookieParser);
 
   const config = app.get(ConfigService);
-  await app.listen(config.get('PORT'));
+  await app.listen(config.get('PORT') ?? 8080);
 }
 bootstrap();

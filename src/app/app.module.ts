@@ -2,7 +2,8 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { LogModule } from 'src/log/log.module';
-import { AuthModule } from 'src/auth/auth.module';
+import { AuthJwtModule } from 'src/auth/jwt/auth-jwt.module';
+import { AuthSessionModule } from 'src/auth/session/auth-session.module';
 import { AppController } from './app.controller';
 
 @Module({
@@ -28,7 +29,8 @@ import { AppController } from './app.controller';
         } as TypeOrmModuleOptions)
     }),
     LogModule,
-    AuthModule
+    AuthJwtModule,
+    AuthSessionModule
   ],
   controllers: [AppController]
 })
