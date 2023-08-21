@@ -32,7 +32,7 @@ export class SessionGuard implements CanActivate {
       await this.SES_SVC.extendExpireDate(sessionId);
 
       const { id, username } = session.createUser;
-      request.user = { id, username };
+      request.user = { sub: id, username };
 
       this.LOGGER.log(`Authorized session id ${sessionId}.`);
     } else {

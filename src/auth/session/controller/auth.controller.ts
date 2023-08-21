@@ -1,4 +1,4 @@
-import { Body, Controller, Res } from '@nestjs/common';
+import { Body, Controller, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { LogService } from 'src/log/log.service';
 import { AuthService } from '../service/auth.service';
 import { SignupDto } from '../dto/signup.dto';
@@ -6,7 +6,9 @@ import { LoginDto } from '../dto/login.dto';
 import { UserMapper } from 'src/auth/user/mapper/user.mapper';
 import { UserDto } from 'src/auth/user/dto/user.dto';
 import { Session } from '../entity/session.entity';
+import { AuthRequest } from 'src/auth/auth-request.dto';
 import { Response } from 'express';
+import { SessionGuard } from '../guard/session.guard';
 
 @Controller('/auth')
 export class AuthController {
@@ -17,8 +19,9 @@ export class AuthController {
   ) {}
 
   SESSION_ID_KEY = 'session_id';
-  SESSION_ID_PATH = '/api';
+  SESSION_ID_PATH = '/';
 
+  @Post('/signup')
   async signup(
     @Body() dto: SignupDto,
     @Res({ passthrough: true }) res: Response
@@ -29,6 +32,7 @@ export class AuthController {
     return this.USER_MAP.userToDto(session.createUser);
   }
 
+  @Post('/login')
   async login(
     @Body() dto: LoginDto,
     @Res({ passthrough: true }) res: Response
@@ -39,9 +43,15 @@ export class AuthController {
     return this.USER_MAP.userToDto(session.createUser);
   }
 
-  async logout(id: string): Promise<boolean> {
-    this.LOGGER.log(`Logout user id ${id}.`);
-    return await this.AUTH_SVC.logout(id);
+  @UseGuards(SessionGuard)
+  @Post('/logout')
+  async logout(
+    @Req() req: AuthRequest,
+    @Res({ passthrough: true }) res: Response
+  ): Promise<boolean> {
+    this.LOGGER.log(`Logout user id ${req.user.sub}.`);
+    res.clearCookie(this.SESSION_ID_KEY, { path: this.SESSION_ID_PATH });
+    return await this.AUTH_SVC.logout(req.user.sub);
   }
 
   private setSessionCookie(session: Session, response: Response): void {
