@@ -4,7 +4,6 @@ import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { LogModule } from 'src/log/log.module';
 import { AuthModule } from 'src/auth/auth.module';
 import { AppController } from './app.controller';
-import { CoreModule } from 'src/core/core.module';
 
 @Module({
   imports: [
@@ -25,12 +24,11 @@ import { CoreModule } from 'src/core/core.module';
           database: config.get('DATABASE_NAME'),
           entityPrefix: 'db_',
           autoLoadEntities: true,
-          synchronize: process.env.NODE_ENV === 'prod' ? false : true
+          synchronize: process.env.NODE_ENV === 'production' ? false : true
         } as TypeOrmModuleOptions)
     }),
     LogModule,
-    AuthModule,
-    CoreModule
+    AuthModule
   ],
   controllers: [AppController]
 })

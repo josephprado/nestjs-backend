@@ -23,7 +23,7 @@ describe('AppController', () => {
 
   describe('getEnvironment()', () => {
     it('should return the current env name', () => {
-      expect(con.getEnvironment()).toEqual('dev-test');
+      expect(con.getEnvironment()).toEqual('test');
     });
   });
 });

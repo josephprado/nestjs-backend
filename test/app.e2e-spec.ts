@@ -42,7 +42,7 @@ describe('AppController (e2e)', () => {
       await request(app.getHttpServer())
         .get('/env')
         .expect(({ text }) => {
-          expect(text).toEqual('dev-test');
+          expect(text).toEqual('test');
         });
     });
   });
