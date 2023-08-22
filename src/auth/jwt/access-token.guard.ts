@@ -4,20 +4,20 @@ import {
   Injectable,
   UnauthorizedException
 } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { LogService } from 'src/log/log.service';
+import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
 
 /**
- * Route handlers using this guard require a valid JSON Web Token (JWT)
+ * Route handlers using this guard require a valid JSON Web Token (JWT).
  */
 @Injectable()
 export class AccessTokenGuard implements CanActivate {
   constructor(
-    private readonly JWT_SVC: JwtService,
     private readonly CONFIG: ConfigService,
-    private readonly LOGGER: LogService
+    private readonly LOGGER: LogService,
+    private readonly JWT_SVC: JwtService
   ) {
     // FIXME: logs are using controller context for some reason
     this.LOGGER.setContext(AccessTokenGuard.name);
