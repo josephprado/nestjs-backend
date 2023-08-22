@@ -2,6 +2,9 @@ import { Entity, JoinColumn, ManyToOne } from 'typeorm';
 import { Base } from 'src/shared/entity/base.entity';
 import { User } from './user.entity';
 
+/**
+ * Contains information about the user edit history of an object.
+ */
 @Entity()
 export abstract class UserHistory extends Base {
   @ManyToOne(() => User, {
