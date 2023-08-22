@@ -3,7 +3,7 @@ import { AppController } from './app.controller';
 import { ConfigService } from '@nestjs/config';
 import { LogService } from 'src/log/log.service';
 
-describe('AppController', () => {
+describe(AppController.name, () => {
   let con: AppController;
 
   beforeEach(async () => {
@@ -15,13 +15,13 @@ describe('AppController', () => {
     con = app.get<AppController>(AppController);
   });
 
-  describe('getHello()', () => {
+  describe(AppController.prototype.getHello.name, () => {
     it('should return "Hello World!"', () => {
       expect(con.getHello()).toEqual('Hello World!');
     });
   });
 
-  describe('getEnvironment()', () => {
+  describe(AppController.prototype.getEnvironment.name, () => {
     it('should return the current env name', () => {
       expect(con.getEnvironment()).toEqual('test');
     });

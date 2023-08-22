@@ -7,6 +7,9 @@ import {
 import { LogService } from 'src/log/log.service';
 import { SessionService } from '../service/session.service';
 
+/**
+ * Route handlers using this guard require a valid "session_id" cookie.
+ */
 @Injectable()
 export class SessionGuard implements CanActivate {
   constructor(

@@ -3,7 +3,7 @@ import { HttpStatus, INestApplication } from '@nestjs/common';
 import request from 'supertest';
 import { AppModule } from './../src/app/app.module';
 
-describe('AppController (e2e)', () => {
+describe(`${AppModule.name} (e2e)`, () => {
   let app: INestApplication;
 
   beforeEach(async () => {

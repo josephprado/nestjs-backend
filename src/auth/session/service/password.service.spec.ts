@@ -8,7 +8,7 @@ import { randomUUID } from 'crypto';
 import argon2 from 'argon2';
 import { NotFoundException } from '@nestjs/common';
 
-describe('PasswordService', () => {
+describe(PasswordService.name, () => {
   let svc: PasswordService;
   let repo: Repository<Password>;
   let user: User;
@@ -43,7 +43,7 @@ describe('PasswordService', () => {
     jest.restoreAllMocks();
   });
 
-  describe('create', () => {
+  describe(PasswordService.prototype.create.name, () => {
     it('should hash the password before saving to the database and attach the given user', async () => {
       const raw = 'xyz';
 
@@ -67,7 +67,7 @@ describe('PasswordService', () => {
     });
   });
 
-  describe('update', () => {
+  describe(PasswordService.prototype.update.name, () => {
     it('should hash the password before saving to the database', async () => {
       const raw = 'xyz';
 
@@ -95,7 +95,7 @@ describe('PasswordService', () => {
     });
   });
 
-  describe('validate', () => {
+  describe(PasswordService.prototype.validate.name, () => {
     it("should return true when the raw password's hash is valid", async () => {
       const raw = 'xyz';
       const password = new Password();

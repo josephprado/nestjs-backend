@@ -4,7 +4,7 @@ import { User } from '../entity/user.entity';
 import { UserDto } from '../dto/user.dto';
 import { randomUUID } from 'crypto';
 
-describe('UserMapper', () => {
+describe(UserMapper.name, () => {
   let map: UserMapper;
 
   beforeEach(async () => {
@@ -15,21 +15,23 @@ describe('UserMapper', () => {
     map = module.get<UserMapper>(UserMapper);
   });
 
-  it('should return the expected user', () => {
-    const user: User = {
-      id: randomUUID(),
-      username: 'username',
-      email: 'username@email.com',
-      createDate: new Date(),
-      updateDate: new Date()
-    };
-    const dto: UserDto = {
-      id: user.id,
-      username: user.username,
-      email: user.email
-    };
+  describe(UserMapper.prototype.userToDto.name, () => {
+    it('should return the expected user', () => {
+      const user: User = {
+        id: randomUUID(),
+        username: 'username',
+        email: 'username@email.com',
+        createDate: new Date(),
+        updateDate: new Date()
+      };
+      const dto: UserDto = {
+        id: user.id,
+        username: user.username,
+        email: user.email
+      };
 
-    const actual = map.userToDto(user);
-    expect(actual).toEqual(dto);
+      const actual = map.userToDto(user);
+      expect(actual).toEqual(dto);
+    });
   });
 });

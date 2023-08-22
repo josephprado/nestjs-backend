@@ -5,7 +5,7 @@ import { UserService } from './user.service';
 import { User } from '../entity/user.entity';
 import { randomUUID } from 'crypto';
 
-describe('UserService', () => {
+describe(UserService.name, () => {
   let svc: UserService;
   let repo: Repository<User>;
   let users: User[];
@@ -46,7 +46,7 @@ describe('UserService', () => {
     jest.restoreAllMocks();
   });
 
-  describe('create', () => {
+  describe(UserService.prototype.create.name, () => {
     it('should return the saved user', async () => {
       const testUser = users[0];
 
@@ -61,7 +61,7 @@ describe('UserService', () => {
     });
   });
 
-  describe('findAll', () => {
+  describe(UserService.prototype.findAll.name, () => {
     it('should return a list of users', async () => {
       jest.spyOn(repo, 'find').mockResolvedValue(users);
       const actual = await svc.findAll();
@@ -88,7 +88,7 @@ describe('UserService', () => {
     });
   });
 
-  describe('findOne', () => {
+  describe(UserService.prototype.findOne.name, () => {
     beforeEach(() => {
       jest
         .spyOn(repo, 'findOne')
@@ -117,7 +117,7 @@ describe('UserService', () => {
     });
   });
 
-  describe('update', () => {
+  describe(UserService.prototype.update.name, () => {
     it.each([[0], [1], [2]])(
       'should return the number of affected rows',
       async (n: number) => {
@@ -131,7 +131,7 @@ describe('UserService', () => {
     );
   });
 
-  describe('delete', () => {
+  describe(UserService.prototype.delete.name, () => {
     it.each([[0], [1], [2]])(
       'should return the number of affected rows',
       async (n: number) => {
