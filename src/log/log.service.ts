@@ -8,7 +8,7 @@ import { ConfigService } from '@nestjs/config';
 export class LogService extends ConsoleLogger {
   constructor(private readonly CONFIG: ConfigService) {
     super();
-    if (this.CONFIG.get('LOGS') === 'false' || process.env.LOGS === 'false')
+    if (this.CONFIG?.get('LOGS') === 'false' || process.env.LOGS === 'false')
       this.setLogLevels([]);
   }
 }
