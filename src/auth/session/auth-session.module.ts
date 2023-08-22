@@ -11,6 +11,11 @@ import { UserService } from '../user/service/user.service';
 import { UserMapper } from '../user/mapper/user.mapper';
 import { User } from '../user/entity/user.entity';
 
+/**
+ * Provides authorization using user session state. Upon logging in, a session id
+ * is created in the database. All subsequent requests from this user will be
+ * attached to this session id, until they logout or the session expires.
+ */
 @Module({
   imports: [TypeOrmModule.forFeature([Session, Password, User]), LogModule],
   controllers: [AuthController],
