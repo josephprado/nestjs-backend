@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { Repository, UpdateResult } from 'typeorm';
+import { DeleteResult, Repository, UpdateResult } from 'typeorm';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { UserService } from './user.service';
 import { User } from '../entity/user.entity';
@@ -120,13 +120,13 @@ describe(UserService.name, () => {
   describe(UserService.prototype.update.name, () => {
     it.each([[0], [1], [2]])(
       'should return the number of affected rows',
-      async (n: number) => {
+      async (affected: number) => {
         jest
           .spyOn(repo, 'update')
-          .mockResolvedValue({ affected: n } as UpdateResult);
+          .mockResolvedValue({ affected } as UpdateResult);
 
         const actual = await svc.update(randomUUID(), {});
-        expect(actual).toEqual(n);
+        expect(actual).toEqual(affected);
       }
     );
   });
@@ -134,13 +134,13 @@ describe(UserService.name, () => {
   describe(UserService.prototype.delete.name, () => {
     it.each([[0], [1], [2]])(
       'should return the number of affected rows',
-      async (n: number) => {
+      async (affected: number) => {
         jest
           .spyOn(repo, 'delete')
-          .mockResolvedValue({ affected: n } as UpdateResult);
+          .mockResolvedValue({ affected } as DeleteResult);
 
         const actual = await svc.delete(randomUUID());
-        expect(actual).toEqual(n);
+        expect(actual).toEqual(affected);
       }
     );
   });
