@@ -82,17 +82,19 @@ describe(PasswordService.name, () => {
       );
     });
 
-    it('should return the number of affected rows', async () => {
-      const raw = 'xyz';
-      const affected = 1;
+    it.each([[0], [1], [2]])(
+      'should return the number of affected rows',
+      async (affected: number) => {
+        const raw = 'xyz';
 
-      jest
-        .spyOn(repo, 'update')
-        .mockResolvedValue({ affected } as UpdateResult);
+        jest
+          .spyOn(repo, 'update')
+          .mockResolvedValue({ affected } as UpdateResult);
 
-      const actual = await svc.update(user.id, raw);
-      expect(actual).toEqual(affected);
-    });
+        const actual = await svc.update(user.id, raw);
+        expect(actual).toEqual(affected);
+      }
+    );
   });
 
   describe(PasswordService.prototype.validate.name, () => {
