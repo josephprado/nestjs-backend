@@ -9,7 +9,7 @@ import { Response } from 'express';
 import { EntityNotFoundError } from 'typeorm';
 
 /**
- * Handles thrown EntityNotFoundErrors
+ * Handles thrown EntityNotFoundErrors.
  */
 @Catch(EntityNotFoundError)
 export class EntityNotFoundErrorFilter implements ExceptionFilter {

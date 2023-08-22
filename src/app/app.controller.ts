@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { LogService } from 'src/log/log.service';
 
 /**
- * Handles requests at the application root path
+ * Handles requests at the application root path.
  */
 @Controller()
 export class AppController {
@@ -15,7 +15,7 @@ export class AppController {
   }
 
   /**
-   * Returns a hello message and a 200 HTTP status code
+   * Returns a hello message and a 200 HTTP status code.
    *
    * @returns Hello World!
    */
@@ -26,9 +26,9 @@ export class AppController {
   }
 
   /**
-   * Gets the current environment of the app
+   * Gets the current environment of the app.
    *
-   * @returns The current environment name
+   * @returns The current environment name.
    */
   @Get('/env')
   getEnvironment(): string {

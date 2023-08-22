@@ -2,7 +2,7 @@ import { ConsoleLogger, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
 /**
- * Provides application logging services
+ * Provides application logging services.
  */
 @Injectable()
 export class LogService extends ConsoleLogger {
