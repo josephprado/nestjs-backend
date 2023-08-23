@@ -3,7 +3,6 @@ import {
   Injectable,
   UnauthorizedException
 } from '@nestjs/common';
-import { LogService } from 'src/log/log.service';
 import { UserService } from '../../user/service/user.service';
 import { User } from '../../user/entity/user.entity';
 import { SignupDto } from '../dto/signup.dto';
@@ -15,7 +14,6 @@ import { Session } from '../entity/session.entity';
 @Injectable()
 export class AuthService {
   constructor(
-    private readonly LOGGER: LogService,
     private readonly USER_SVC: UserService,
     private readonly PASS_SVC: PasswordService,
     private readonly SES_SVC: SessionService
@@ -28,11 +26,7 @@ export class AuthService {
       where: { username }
     });
 
-    if (existingUser) {
-      const message = 'User already exists.';
-      this.LOGGER.error(message);
-      throw new BadRequestException(message);
-    }
+    if (existingUser) throw new BadRequestException('User already exists.');
 
     let user = new User();
     user.username = username;
@@ -45,24 +39,19 @@ export class AuthService {
 
   async login(dto: LoginDto): Promise<Session> {
     const handleUnauthorized = () => {
-      const message = 'The user credentials are invalid.';
-      this.LOGGER.error(message);
-      throw new UnauthorizedException(message);
+      throw new UnauthorizedException('The user credentials are invalid.');
     };
 
     const { username, password } = dto;
-    const user = await this.USER_SVC.findOne({ where: { username } });
-    if (!user) handleUnauthorized();
 
     try {
-      const validPassword = this.PASS_SVC.validate(username, password);
+      const validPassword = await this.PASS_SVC.validate(username, password);
       if (!validPassword) handleUnauthorized();
     } catch {
-      // This should never happen, as there should be a 1:1 relation of user to password.
-      const message = `Password not found for user id ${user.id}.`;
-      this.LOGGER.error(message);
-      throw new Error();
+      handleUnauthorized();
     }
+
+    const user = await this.USER_SVC.findOne({ where: { username } });
     return await this.SES_SVC.create(user);
   }
 

@@ -64,7 +64,7 @@ export class PasswordService {
     const password = await this.REPO.findOne({
       where: { user: { username } }
     });
-    if (!password) throw new NotFoundException();
+    if (!password) throw new NotFoundException('Username not found.');
     return await argon2.verify(rawPassword, password.hash);
   }
 }

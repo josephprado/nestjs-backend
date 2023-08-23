@@ -27,10 +27,8 @@ export class AccessTokenGuard implements CanActivate {
     const request = context.switchToHttp().getRequest();
     const token = this.extractTokenFromHeader(request);
 
-    if (!token) {
-      this.LOGGER.error('Malformed token.');
-      throw new UnauthorizedException();
-    }
+    if (!token) throw new UnauthorizedException('Malformed token.');
+
     try {
       const payload = await this.JWT_SVC.verifyAsync(token, {
         secret: this.CONFIG.get('JWT_ACCESS_SECRET')
@@ -38,8 +36,7 @@ export class AccessTokenGuard implements CanActivate {
       request.user = payload;
       payload.sub && this.LOGGER.log(`Authorized user with id ${payload.sub}.`);
     } catch {
-      this.LOGGER.error('Invalid token.');
-      throw new UnauthorizedException();
+      throw new UnauthorizedException('Invalid token.');
     }
     return true;
   }
