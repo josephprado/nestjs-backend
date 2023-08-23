@@ -75,11 +75,11 @@ export class SessionService {
    * Calculates the expiration date for a new/extended session, based on
    * the 'SESSION_EXPIRE' property in the current environment's .env file.
    * The acceptable time units for this property are:
-   * `s`: seconds, e.g., 60s
-   * `m`: minutes, e.g., 60m
-   * `h`: hours, e.g., 24h
-   * `d`: days, e.g., 365d
-   * `w`: weeks, e.g., 52w
+   * - `s`: seconds, e.g., 60s
+   * - `m`: minutes, e.g., 60m
+   * - `h`: hours, e.g., 24h
+   * - `d`: days, e.g., 365d
+   * - `w`: weeks, e.g., 52w
    *
    * @returns A date.
    */
