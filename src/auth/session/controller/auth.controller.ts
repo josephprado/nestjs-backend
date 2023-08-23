@@ -1,4 +1,13 @@
-import { Body, Controller, Post, Req, Res, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  HttpCode,
+  HttpStatus,
+  Post,
+  Req,
+  Res,
+  UseGuards
+} from '@nestjs/common';
 import { LogService } from 'src/log/log.service';
 import { AuthService } from '../service/auth.service';
 import { SignupDto } from '../dto/signup.dto';
@@ -10,6 +19,9 @@ import { AuthRequest } from 'src/auth/auth-request.dto';
 import { Response } from 'express';
 import { SessionGuard } from '../guard/session.guard';
 
+/**
+ * Provides authentication services.
+ */
 @Controller('/auth')
 export class AuthController {
   constructor(
@@ -21,6 +33,14 @@ export class AuthController {
   SESSION_ID_KEY = 'session_id';
   SESSION_ID_PATH = '/';
 
+  /**
+   * Registers a new user with the application. If successful, a session id
+   * will be set as an HTTP-only cookie on the client.
+   *
+   * @param dto A signup DTO.
+   * @param res An HTTP response.
+   * @returns A user DTO.
+   */
   @Post('/signup')
   async signup(
     @Body() dto: SignupDto,
@@ -32,6 +52,15 @@ export class AuthController {
     return this.USER_MAP.userToDto(session.createUser);
   }
 
+  /**
+   * Validates the user credentials. If valid, a session id will be set as an
+   * HTTP-only cookie on the client.
+   *
+   * @param dto A login DTO
+   * @param res An HTTP response.
+   * @returns A user DTO.
+   */
+  @HttpCode(HttpStatus.OK)
   @Post('/login')
   async login(
     @Body() dto: LoginDto,
@@ -43,7 +72,15 @@ export class AuthController {
     return this.USER_MAP.userToDto(session.createUser);
   }
 
+  /**
+   * Invalidates the current session for the requesting user.
+   *
+   * @param req An authorized HTTP request.
+   * @param res An HTTP response.
+   * @returns True if the logout was successful, or false otherwise.
+   */
   @UseGuards(SessionGuard)
+  @HttpCode(HttpStatus.OK)
   @Post('/logout')
   async logout(
     @Req() req: AuthRequest,
@@ -54,6 +91,18 @@ export class AuthController {
     return await this.AUTH_SVC.logout(req.user.sub);
   }
 
+  /**
+   * Sets the session id as a cookie on the given response. The cookie
+   * will have the following attributes:
+   * - HttpOnly
+   * - Secure
+   * - Path: {@link SESSION_ID_PATH}
+   * - SameSite: 'strict'
+   * - Expires: Now + an amount of time defined in the current environment's .env file.
+   *
+   * @param session A session.
+   * @param response An HTTP response.
+   */
   private setSessionCookie(session: Session, response: Response): void {
     response.cookie(this.SESSION_ID_KEY, session.id, {
       // Cookie is inaccessible to JavaScript Document.cookie API
