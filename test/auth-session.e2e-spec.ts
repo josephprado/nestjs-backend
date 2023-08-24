@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import request from 'supertest';
-import { AppModule } from './../src/app/app.module';
+import { AppModule } from 'src/app/app.module';
 import { AuthSessionModule } from 'src/auth/session/auth-session.module';
 import { AuthController } from 'src/auth/session/controller/auth.controller';
 import { SignupDto } from 'src/auth/session/dto/signup.dto';
