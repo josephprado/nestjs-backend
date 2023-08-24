@@ -20,7 +20,7 @@ async function bootstrap() {
     new EntityNotFoundErrorFilter(),
     new EntityPropertyNotFoundErrorFilter()
   );
-  app.use(cookieParser);
+  app.use(cookieParser());
 
   const config = app.get(ConfigService);
   await app.listen(config.get('PORT') ?? 8080);
