@@ -1,5 +1,6 @@
 import {
   BeforeInsert,
+  Column,
   Entity,
   JoinColumn,
   OneToOne,
@@ -34,5 +35,6 @@ export class Password extends Base {
   }
 
   @IsNotEmpty()
+  @Column()
   hash: string;
 }

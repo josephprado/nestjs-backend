@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { UserHistory } from '../../user/entity/user-history.entity';
 import { IsNotEmpty } from 'class-validator';
 
@@ -15,5 +15,6 @@ export class Session extends UserHistory {
   id: string;
 
   @IsNotEmpty()
+  @Column()
   expireDate: Date;
 }

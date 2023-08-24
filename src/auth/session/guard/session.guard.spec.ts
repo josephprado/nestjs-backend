@@ -53,7 +53,9 @@ describe(SessionGuard.name, () => {
 
       request = {
         cookies: {
-          get: () => session.id
+          get session_id() {
+            return session.id;
+          }
         }
       };
       context = {

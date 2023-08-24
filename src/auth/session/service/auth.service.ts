@@ -3,6 +3,7 @@ import {
   Injectable,
   UnauthorizedException
 } from '@nestjs/common';
+import { LogService } from 'src/log/log.service';
 import { UserService } from '../../user/service/user.service';
 import { User } from '../../user/entity/user.entity';
 import { SignupDto } from '../dto/signup.dto';
@@ -17,10 +18,13 @@ import { Session } from '../entity/session.entity';
 @Injectable()
 export class AuthService {
   constructor(
+    private readonly LOGGER: LogService,
     private readonly USER_SVC: UserService,
     private readonly PASS_SVC: PasswordService,
     private readonly SES_SVC: SessionService
-  ) {}
+  ) {
+    this.LOGGER.setContext(AuthService.name);
+  }
 
   /**
    * Registers a new user with the application. if successful, a new
@@ -38,7 +42,11 @@ export class AuthService {
       where: { username }
     });
 
-    if (existingUser) throw new BadRequestException('User already exists.');
+    if (existingUser) {
+      const message = 'User already exists.';
+      this.LOGGER.error(message);
+      throw new BadRequestException(message);
+    }
 
     let user = new User();
     user.username = username;
@@ -60,7 +68,9 @@ export class AuthService {
    */
   async login(dto: LoginDto): Promise<Session> {
     const handleUnauthorized = () => {
-      throw new UnauthorizedException('The user credentials are invalid.');
+      const message = 'The user credentials are invalid.';
+      this.LOGGER.error(message);
+      throw new UnauthorizedException(message);
     };
 
     const { username, password } = dto;
@@ -77,7 +87,7 @@ export class AuthService {
   }
 
   /**
-   * Invalidates the session for the identified user.
+   * Invalidates all sessions for the identified user.
    *
    * @param id A user id.
    * @returns True if the logout was successful, or false otherwise.

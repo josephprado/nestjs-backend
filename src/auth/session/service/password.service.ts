@@ -1,4 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { LogService } from 'src/log/log.service';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Password } from '../entity/password.entity';
@@ -11,8 +12,11 @@ import argon2 from 'argon2';
 @Injectable()
 export class PasswordService {
   constructor(
+    private readonly LOGGER: LogService,
     @InjectRepository(Password) private readonly REPO: Repository<Password>
-  ) {}
+  ) {
+    this.LOGGER.setContext(PasswordService.name);
+  }
 
   /**
    * Creates a new password for the given user. The given raw password
@@ -64,7 +68,18 @@ export class PasswordService {
     const password = await this.REPO.findOne({
       where: { user: { username } }
     });
-    if (!password) throw new NotFoundException('Username not found.');
-    return await argon2.verify(rawPassword, password.hash);
+
+    if (!password) {
+      const message = 'Username not found.';
+      this.LOGGER.error(message);
+      throw new NotFoundException(message);
+    }
+
+    try {
+      return await argon2.verify(password.hash, rawPassword);
+    } catch (error) {
+      this.LOGGER.error(error);
+      throw new Error(error);
+    }
   }
 }

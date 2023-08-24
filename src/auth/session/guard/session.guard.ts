@@ -22,9 +22,13 @@ export class SessionGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
-    const sessionId = request.cookies?.get('session_id');
+    const sessionId = request.cookies?.session_id;
 
-    if (!sessionId) throw new UnauthorizedException('Malformed session id.');
+    if (!sessionId) {
+      const message = 'Malformed session id.';
+      this.LOGGER.error(message);
+      throw new UnauthorizedException(message);
+    }
 
     const session = await this.SES_SVC.findOneById(sessionId);
 
@@ -36,7 +40,9 @@ export class SessionGuard implements CanActivate {
 
       this.LOGGER.log(`Authorized session id ${sessionId}.`);
     } else {
-      throw new UnauthorizedException('Invalid session id.');
+      const message = 'Invalid session id.';
+      this.LOGGER.error(message);
+      throw new UnauthorizedException(message);
     }
     return true;
   }

@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { LogService } from 'src/log/log.service';
 import { Repository, UpdateResult } from 'typeorm';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { PasswordService } from './password.service';
@@ -16,6 +17,7 @@ describe(PasswordService.name, () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
+        LogService,
         PasswordService,
         {
           provide: getRepositoryToken(Password),
@@ -111,7 +113,7 @@ describe(PasswordService.name, () => {
         );
       jest
         .spyOn(argon2, 'verify')
-        .mockImplementation(async (x, y) => x === raw && y === password.hash);
+        .mockImplementation(async (x, y) => x === password.hash && y === raw);
 
       const actual = await svc.validate(user.username, raw);
       expect(actual).toEqual(true);
@@ -130,7 +132,7 @@ describe(PasswordService.name, () => {
         );
       jest
         .spyOn(argon2, 'verify')
-        .mockImplementation(async (x, y) => x === raw && y === password.hash);
+        .mockImplementation(async (x, y) => x === password.hash && y === raw);
 
       const actual = await svc.validate(user.username, raw + '1');
       expect(actual).toEqual(false);
