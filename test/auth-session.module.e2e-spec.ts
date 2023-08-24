@@ -123,15 +123,15 @@ describe(`${AuthSessionModule.name} (e2e)`, () => {
         .post(SIGNUP_ENDPOINT)
         .send(signupDto)
         .expect(async ({ headers }) => {
-          const sessionIdCookie = headers['set-cookie'].find((cookie: string) =>
+          const sessionCookie = headers['set-cookie'].find((cookie: string) =>
             cookie.startsWith('session_id')
           );
-          expect(sessionIdCookie).toBeDefined();
-          expect(sessionIdCookie).toContain('HttpOnly');
-          expect(sessionIdCookie).toContain('Secure');
-          expect(sessionIdCookie).toContain('Path=/');
-          expect(sessionIdCookie).toContain('SameSite=Strict');
-          expect(sessionIdCookie).toContain('Expires');
+          expect(sessionCookie).toBeDefined();
+          expect(sessionCookie).toContain('HttpOnly');
+          expect(sessionCookie).toContain('Secure');
+          expect(sessionCookie).toContain('Path=/');
+          expect(sessionCookie).toContain('SameSite=Strict');
+          expect(sessionCookie).toContain('Expires');
         });
     });
   });
@@ -215,15 +215,15 @@ describe(`${AuthSessionModule.name} (e2e)`, () => {
         .post(LOGIN_ENDPOINT)
         .send(loginDto)
         .expect(async ({ headers }) => {
-          const sessionIdCookie = headers['set-cookie'].find((cookie: string) =>
+          const sessionCookie = headers['set-cookie'].find((cookie: string) =>
             cookie.startsWith('session_id')
           );
-          expect(sessionIdCookie).toBeDefined();
-          expect(sessionIdCookie).toContain('HttpOnly');
-          expect(sessionIdCookie).toContain('Secure');
-          expect(sessionIdCookie).toContain('Path=/');
-          expect(sessionIdCookie).toContain('SameSite=Strict');
-          expect(sessionIdCookie).toContain('Expires');
+          expect(sessionCookie).toBeDefined();
+          expect(sessionCookie).toContain('HttpOnly');
+          expect(sessionCookie).toContain('Secure');
+          expect(sessionCookie).toContain('Path=/');
+          expect(sessionCookie).toContain('SameSite=Strict');
+          expect(sessionCookie).toContain('Expires');
         });
     });
   });
@@ -248,15 +248,28 @@ describe(`${AuthSessionModule.name} (e2e)`, () => {
         .expect(HttpStatus.OK);
     });
 
+    it('should return UNAUTHORIZED status if no session id cookie', async () => {
+      await request(app.getHttpServer())
+        .post(LOGOUT_ENDPOINT)
+        .expect(HttpStatus.UNAUTHORIZED);
+    });
+
+    it('should return UNAUTHORIZED status if session id cookie is invalid', async () => {
+      await request(app.getHttpServer())
+        .post(LOGOUT_ENDPOINT)
+        .set('Cookie', 'xyz')
+        .expect(HttpStatus.UNAUTHORIZED);
+    });
+
     it('should delete all sessions of the user', async () => {
       await request(app.getHttpServer())
         .post(LOGOUT_ENDPOINT)
         .set('Cookie', sessionCookie)
         .expect(async () => {
-          const session = await sesRepo.findOneBy({
+          const sessions = await sesRepo.findBy({
             createUser: { username: signupDto.username }
           });
-          expect(session).toBeNull();
+          expect(sessions.length).toEqual(0);
         });
     });
 
