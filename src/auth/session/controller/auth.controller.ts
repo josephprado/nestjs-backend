@@ -28,7 +28,9 @@ export class AuthController {
     private readonly LOGGER: LogService,
     private readonly AUTH_SVC: AuthService,
     private readonly USER_MAP: UserMapper
-  ) {}
+  ) {
+    this.LOGGER.setContext(AuthController.name);
+  }
 
   SESSION_ID_KEY = 'session_id';
   SESSION_ID_PATH = '/';
