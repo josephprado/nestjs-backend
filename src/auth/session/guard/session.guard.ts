@@ -7,6 +7,9 @@ import {
 import { LogService } from 'src/log/log.service';
 import { SessionService } from '../service/session.service';
 
+/**
+ * Route handlers using this guard require a valid "session_id" cookie.
+ */
 @Injectable()
 export class SessionGuard implements CanActivate {
   constructor(
@@ -19,11 +22,12 @@ export class SessionGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
-    const sessionId = request.cookies?.get('session_id');
+    const sessionId = request.cookies?.session_id;
 
     if (!sessionId) {
-      this.LOGGER.error('Malformed session id.');
-      throw new UnauthorizedException();
+      const message = 'Malformed session id.';
+      this.LOGGER.error(message);
+      throw new UnauthorizedException(message);
     }
 
     const session = await this.SES_SVC.findOneById(sessionId);
@@ -36,8 +40,9 @@ export class SessionGuard implements CanActivate {
 
       this.LOGGER.log(`Authorized session id ${sessionId}.`);
     } else {
-      this.LOGGER.error('Invalid session id.');
-      throw new UnauthorizedException();
+      const message = 'Invalid session id.';
+      this.LOGGER.error(message);
+      throw new UnauthorizedException(message);
     }
     return true;
   }

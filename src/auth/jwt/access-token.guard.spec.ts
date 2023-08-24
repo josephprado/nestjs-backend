@@ -1,12 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { AccessTokenGuard } from './access-token.guard';
-import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { LogService } from 'src/log/log.service';
+import { AccessTokenGuard } from './access-token.guard';
+import { JwtService } from '@nestjs/jwt';
 import { ExecutionContext, UnauthorizedException } from '@nestjs/common';
 import { randomUUID } from 'crypto';
 
-describe('AccessTokenGuard', () => {
+describe(AccessTokenGuard.name, () => {
   let guard: AccessTokenGuard;
   let jwtSvc: JwtService;
   let config: ConfigService;
@@ -25,7 +25,7 @@ describe('AccessTokenGuard', () => {
     jest.restoreAllMocks();
   });
 
-  describe('canActivate()', () => {
+  describe(AccessTokenGuard.prototype.canActivate.name, () => {
     it('should return true if token is valid', async () => {
       const context = {
         switchToHttp: () => ({

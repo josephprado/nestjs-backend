@@ -9,7 +9,7 @@ import { Response } from 'express';
 import { EntityPropertyNotFoundError } from 'typeorm';
 
 /**
- * Handles thrown EntityPropertyNotFoundErrors
+ * Handles thrown EntityPropertyNotFoundErrors.
  */
 @Catch(EntityPropertyNotFoundError)
 export class EntityPropertyNotFoundErrorFilter implements ExceptionFilter {

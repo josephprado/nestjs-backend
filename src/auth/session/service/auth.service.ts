@@ -12,6 +12,9 @@ import { PasswordService } from './password.service';
 import { SessionService } from './session.service';
 import { Session } from '../entity/session.entity';
 
+/**
+ * Provides authentication services.
+ */
 @Injectable()
 export class AuthService {
   constructor(
@@ -19,8 +22,19 @@ export class AuthService {
     private readonly USER_SVC: UserService,
     private readonly PASS_SVC: PasswordService,
     private readonly SES_SVC: SessionService
-  ) {}
+  ) {
+    this.LOGGER.setContext(AuthService.name);
+  }
 
+  /**
+   * Registers a new user with the application. if successful, a new
+   * session is created for the user.
+   *
+   * @param dto A signup DTO.
+   * @returns A session.
+   * @throws BadRequestException if the provided username already exists
+   * in the database.
+   */
   async signup(dto: SignupDto): Promise<Session> {
     const { username, email, password } = dto;
 
@@ -43,6 +57,15 @@ export class AuthService {
     return await this.SES_SVC.create(user);
   }
 
+  /**
+   * Validates the given user credentials. If valid, a new session is created
+   * for the user.
+   *
+   * @param dto A login DTO.
+   * @returns A session.
+   * @throws UnauthorizedException if the password does not match the database
+   * record, or if the username does not exist.
+   */
   async login(dto: LoginDto): Promise<Session> {
     const handleUnauthorized = () => {
       const message = 'The user credentials are invalid.';
@@ -51,21 +74,24 @@ export class AuthService {
     };
 
     const { username, password } = dto;
-    const user = await this.USER_SVC.findOne({ where: { username } });
-    if (!user) handleUnauthorized();
 
     try {
-      const validPassword = this.PASS_SVC.validate(username, password);
+      const validPassword = await this.PASS_SVC.validate(username, password);
       if (!validPassword) handleUnauthorized();
     } catch {
-      // This should never happen, as there should be a 1:1 relation of user to password.
-      const message = `Password not found for user id ${user.id}.`;
-      this.LOGGER.error(message);
-      throw new Error();
+      handleUnauthorized();
     }
+
+    const user = await this.USER_SVC.findOne({ where: { username } });
     return await this.SES_SVC.create(user);
   }
 
+  /**
+   * Invalidates all sessions for the identified user.
+   *
+   * @param id A user id.
+   * @returns True if the logout was successful, or false otherwise.
+   */
   async logout(id: string): Promise<boolean> {
     return (await this.SES_SVC.delete({ createUser: { id } })) > 0;
   }

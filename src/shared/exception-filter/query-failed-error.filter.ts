@@ -9,7 +9,7 @@ import { Response } from 'express';
 import { QueryFailedError } from 'typeorm';
 
 /**
- * Handles thrown QueryFailedErrors
+ * Handles thrown QueryFailedErrors.
  */
 @Catch(QueryFailedError)
 export class QueryFailedErrorFilter implements ExceptionFilter {
