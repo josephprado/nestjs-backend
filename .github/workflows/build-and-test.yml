@@ -60,11 +60,11 @@ jobs:
           sudo apt-get update
           sudo apt-get install --yes postgresql-client
 
-      - name: setup test env
+      - name: setup local-test env
         run: |
           echo "${{ secrets.ENV_LOCAL_TEST }}" >> .env.local-test
           mkdir -p ./env
-          mv .env.test ./env
+          mv .env.local-test ./env
 
       - name: build and test
         run: |
