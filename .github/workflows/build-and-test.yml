@@ -18,7 +18,7 @@ jobs:
       postgres:
         image: postgres
         env:
-          POSTGRES_DB: nest-back-dev-2-test
+          POSTGRES_DB: nest-back-local-test
           POSTGRES_PORT: 5432
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
@@ -62,7 +62,7 @@ jobs:
 
       - name: setup test env
         run: |
-          echo "${{ secrets.ENV_TEST }}" >> .env.test
+          echo "${{ secrets.ENV_LOCAL_TEST }}" >> .env.local-test
           mkdir -p ./env
           mv .env.test ./env
 
