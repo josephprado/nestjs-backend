@@ -75,10 +75,16 @@ export class AuthService {
 
     const { username, password } = dto;
 
+    let validPassword = false;
+
     try {
-      const validPassword = await this.PASS_SVC.validate(username, password);
-      if (!validPassword) handleUnauthorized();
+      validPassword = await this.PASS_SVC.validate(username, password);
     } catch {
+      handleUnauthorized();
+    }
+
+    if (!validPassword) {
+      this.LOGGER.error('Invalid password.');
       handleUnauthorized();
     }
 
