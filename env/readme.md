@@ -17,6 +17,9 @@ DATABASE_USER=
 DATABASE_PASS=
 DATABASE_NAME=
 
-# JWT authentication secret keys
+# The maximum lifetime of a session (e.g., 60s, 60m, 24h, 7d, 52w)
+SESSION_EXPIRE=
+
+# JWT authentication secret key
 JWT_ACCESS_SECRET=
 ```
