@@ -42,7 +42,7 @@ describe(`${AppModule.name} (e2e)`, () => {
       await request(app.getHttpServer())
         .get('/env')
         .expect(({ text }) => {
-          expect(text).toEqual('test');
+          expect(text).toEqual('local-test');
         });
     });
   });

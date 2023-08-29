@@ -23,7 +23,7 @@ describe(AppController.name, () => {
 
   describe(AppController.prototype.getEnvironment.name, () => {
     it('should return the current env name', () => {
-      expect(con.getEnvironment()).toEqual('test');
+      expect(con.getEnvironment()).toEqual('local-test');
     });
   });
 });
