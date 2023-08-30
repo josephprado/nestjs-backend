@@ -26,6 +26,6 @@ import { User } from '../user/entity/user.entity';
     UserService,
     UserMapper
   ],
-  exports: [AuthService, UserService]
+  exports: [AuthService, SessionService, UserService]
 })
 export class AuthSessionModule {}
