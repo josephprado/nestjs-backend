@@ -279,11 +279,11 @@ describe(`${AuthSessionModule.name} (e2e)`, () => {
         .set('Cookie', sessionCookie)
         .expect(({ headers }) => {
           const cookie = headers['set-cookie']
-            .find((cookie: string) => cookie.startsWith('session_id'))
+            .find((cookie: string) => cookie.startsWith('session_id=;'))
             .split(';')
             .reduce((prev: any, curr: string) => {
               const [key, val] = curr.split('=');
-              prev[key.trim().toLowerCase()] = val.trim().toLowerCase();
+              prev[key.trim().toLowerCase()] = val?.trim().toLowerCase();
               return prev;
             }, {});
 

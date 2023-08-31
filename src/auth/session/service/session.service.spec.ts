@@ -187,4 +187,26 @@ describe(SessionService.name, () => {
       }
     );
   });
+
+  describe(SessionService.prototype.sessionCookieKey.name, () => {
+    it('should return the expected session id cookie key', () => {
+      expect(svc.sessionCookieKey()).toEqual('session_id');
+    });
+  });
+
+  describe(SessionService.prototype.sessionCookiePath.name, () => {
+    it('should return the expected session id cookie path', () => {
+      expect(svc.sessionCookiePath()).toEqual('/');
+    });
+  });
+
+  // TODO
+  describe(SessionService.prototype.setSessionCookie.name, () => {
+    it('should set a session id cookie on the response with expected attributes', () => {});
+  });
+
+  // TODO
+  describe(SessionService.prototype.clearSessionCookie.name, () => {
+    it('should clear the session id cookie on the response with expected attributes', () => {});
+  });
 });
