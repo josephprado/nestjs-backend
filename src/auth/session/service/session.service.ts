@@ -97,7 +97,6 @@ export class SessionService {
    * - Secure
    * - Path: '/'
    * - SameSite: 'strict'
-   * - Expires: Now + an amount of time defined in the current environment's .env file.
    *
    * @param session A session.
    * @param response An HTTP response.
@@ -115,9 +114,7 @@ export class SessionService {
 
       // Browser only sends cookie with requests to the cookie's origin site.
       // If sameSite=lax, browser also sends cookie when user navigates to origin site (from a link)
-      sameSite: 'strict',
-
-      expires: session.expireDate
+      sameSite: 'strict'
     });
   }
 

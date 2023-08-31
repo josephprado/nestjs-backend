@@ -131,7 +131,6 @@ describe(`${AuthSessionModule.name} (e2e)`, () => {
           expect(sessionCookie).toContain('Secure');
           expect(sessionCookie).toContain('Path=/');
           expect(sessionCookie).toContain('SameSite=Strict');
-          expect(sessionCookie).toContain('Expires');
         });
     });
   });
@@ -223,7 +222,6 @@ describe(`${AuthSessionModule.name} (e2e)`, () => {
           expect(sessionCookie).toContain('Secure');
           expect(sessionCookie).toContain('Path=/');
           expect(sessionCookie).toContain('SameSite=Strict');
-          expect(sessionCookie).toContain('Expires');
         });
     });
   });

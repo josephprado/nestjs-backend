@@ -35,9 +35,6 @@ export class SessionGuard implements CanActivate {
     if (session) {
       await this.SES_SVC.extendExpireDate(sessionId);
 
-      const response = context.switchToHttp().getResponse();
-      this.SES_SVC.setSessionCookie(session, response);
-
       const { id, username } = session.createUser;
       request.user = { sub: id, username };
 
