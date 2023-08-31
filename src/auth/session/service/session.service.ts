@@ -4,6 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { FindOptionsWhere, Repository } from 'typeorm';
 import { Session } from '../entity/session.entity';
 import { User } from '../../user/entity/user.entity';
+import { Response } from 'express';
 
 /**
  * Provides services for managing user sessions.
@@ -69,6 +70,66 @@ export class SessionService {
   async delete(options: FindOptionsWhere<Session>): Promise<number> {
     const { affected } = await this.REPO.delete(options);
     return affected ?? 0;
+  }
+
+  /**
+   * Gets the key/name of the session id cookie set on the client.
+   *
+   * @returns The session id cookie key/name.
+   */
+  sessionCookieKey(): string {
+    return 'session_id';
+  }
+
+  /**
+   * Gets the path attribute of the session id cookie.
+   *
+   * @returns The path of the session id cookie.
+   */
+  sessionCookiePath(): string {
+    return '/';
+  }
+
+  /**
+   * Sets the session id as a cookie on the given response. The cookie
+   * will have the following attributes:
+   * - HttpOnly
+   * - Secure
+   * - Path: '/'
+   * - SameSite: 'strict'
+   * - Expires: Now + an amount of time defined in the current environment's .env file.
+   *
+   * @param session A session.
+   * @param response An HTTP response.
+   */
+  setSessionCookie(session: Session, response: Response): void {
+    response.cookie(this.sessionCookieKey(), session.id, {
+      // Cookie is inaccessible to JavaScript Document.cookie API
+      httpOnly: true,
+
+      // Browser only sends cookie on HTTPS requests (not HTTP)
+      secure: true,
+
+      // Browser only sends cookie if this path is present in the URL
+      path: this.sessionCookiePath(),
+
+      // Browser only sends cookie with requests to the cookie's origin site.
+      // If sameSite=lax, browser also sends cookie when user navigates to origin site (from a link)
+      sameSite: 'strict',
+
+      expires: session.expireDate
+    });
+  }
+
+  /**
+   * Clears the session id cooke in the HTTP response.
+   *
+   * @param response An HTTP response.
+   */
+  clearSessionCookie(response: Response): void {
+    response.clearCookie(this.sessionCookieKey(), {
+      path: this.sessionCookiePath()
+    });
   }
 
   /**

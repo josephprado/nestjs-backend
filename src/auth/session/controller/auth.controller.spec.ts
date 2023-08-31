@@ -8,6 +8,7 @@ import { LoginDto } from '../dto/login.dto';
 import { UserMapper } from 'src/auth/user/mapper/user.mapper';
 import { User } from 'src/auth/user/entity/user.entity';
 import { UserDto } from 'src/auth/user/dto/user.dto';
+import { SessionService } from '../service/session.service';
 import { Session } from '../entity/session.entity';
 import { SessionGuard } from '../guard/session.guard';
 import { randomUUID } from 'crypto';
@@ -15,6 +16,7 @@ import { randomUUID } from 'crypto';
 describe(AuthController.name, () => {
   let con: AuthController;
   let authSvc: AuthService;
+  let sesSvc: SessionService;
   let userMap: UserMapper;
   let user: User;
   let userDto: UserDto;
@@ -34,6 +36,13 @@ describe(AuthController.name, () => {
             logout: jest.fn()
           }
         },
+        {
+          provide: SessionService,
+          useValue: {
+            setSessionCookie: jest.fn(),
+            clearSessionCookie: jest.fn()
+          }
+        },
         UserMapper
       ]
     })
@@ -43,6 +52,7 @@ describe(AuthController.name, () => {
 
     con = module.get<AuthController>(AuthController);
     authSvc = module.get<AuthService>(AuthService);
+    sesSvc = module.get<SessionService>(SessionService);
     userMap = module.get<UserMapper>(UserMapper);
 
     user = {
@@ -59,10 +69,7 @@ describe(AuthController.name, () => {
       email: user.email
     };
 
-    res = {
-      cookie: jest.fn(),
-      clearCookie: jest.fn()
-    };
+    res = {};
 
     jest
       .spyOn(userMap, 'userToDto')
@@ -99,7 +106,7 @@ describe(AuthController.name, () => {
 
     it('should set a session id cookie', async () => {
       await con.signup(dto, res);
-      expect(res.cookie).toHaveBeenCalledTimes(1);
+      expect(sesSvc.setSessionCookie).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -128,7 +135,7 @@ describe(AuthController.name, () => {
 
     it('should set a session id cookie', async () => {
       await con.login(dto, res);
-      expect(res.cookie).toHaveBeenCalledTimes(1);
+      expect(sesSvc.setSessionCookie).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -145,7 +152,7 @@ describe(AuthController.name, () => {
 
     it('should clear the session id cookie', async () => {
       await con.logout(req, res);
-      expect(res.clearCookie).toHaveBeenCalledTimes(1);
+      expect(sesSvc.clearSessionCookie).toHaveBeenCalledTimes(1);
     });
 
     it('should return true if the logout succeeds', async () => {

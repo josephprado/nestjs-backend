@@ -20,7 +20,9 @@ describe(SessionGuard.name, () => {
           provide: SessionService,
           useValue: {
             findOneById: jest.fn(),
-            extendExpireDate: jest.fn()
+            extendExpireDate: jest.fn(),
+            setSessionCookie: jest.fn(),
+            clearSessionCookie: jest.fn()
           }
         }
       ]
@@ -37,6 +39,7 @@ describe(SessionGuard.name, () => {
   describe(SessionGuard.prototype.canActivate.name, () => {
     let context: ExecutionContext;
     let request: any;
+    let response: any;
     let session: Session;
     let user: User;
 
@@ -58,9 +61,11 @@ describe(SessionGuard.name, () => {
           }
         }
       };
+      response = {};
       context = {
         switchToHttp: () => ({
-          getRequest: () => request
+          getRequest: () => request,
+          getResponse: () => response
         })
       } as ExecutionContext;
     });
@@ -101,6 +106,16 @@ describe(SessionGuard.name, () => {
 
       await guard.canActivate(context);
       expect(sesSvc.extendExpireDate).toHaveBeenCalledWith(session.id);
+    });
+
+    it('should set a session id cookie on the response', async () => {
+      session.id = randomUUID();
+      jest
+        .spyOn(sesSvc, 'findOneById')
+        .mockImplementation(async (x) => (x === session.id ? session : null));
+
+      await guard.canActivate(context);
+      expect(sesSvc.setSessionCookie).toHaveBeenCalledWith(session, response);
     });
 
     it('should add the user id (sub) and username to the request object', async () => {
